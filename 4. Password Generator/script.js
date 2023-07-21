@@ -31,99 +31,74 @@ const [decreaseBtn, increaseBtn] = counterBtns;
 const generateBtn = document.querySelector(".generate-btn");
 const copyBtn = document.querySelector(".copy-btn");
 
-// Functionality
+// num =6 max 20
+
 let counter = 6;
-counterEl.textContent = counter;
+let myPassword = "";
 
-// Decrease counter if it is greater than 6
-decreaseBtn.addEventListener("click", function (event) {
-  event.preventDefault();
-  if (counter > 6) {
-    counter--;
-  }
-  counterEl.textContent = counter;
+decreaseBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  counter > 6 && counter--;
+
+  counterEl.innerHTML = counter;
+});
+increaseBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  counter < 20 && counter++;
+  counterEl.innerHTML = counter;
 });
 
-// Increase counter if it is lesser than 20
-increaseBtn.addEventListener("click", function (event) {
-  event.preventDefault();
-  if (counter < 20) {
-    counter++;
-  }
-  counterEl.textContent = counter;
-});
-
-// getRandom gives a random character from on of the selected inptus
-const chars = [];
-
-const getRandom = () => {
-  chars.length = 0;
-
-  if (upperInput.checked) {
-    chars.push(
-      upperCaseLetters[Math.floor(Math.random() * upperCaseLetters.length)]
-    );
-  }
-
-  if (lowerInput.checked) {
-    chars.push(
-      lowerCaseLetters[Math.floor(Math.random() * lowerCaseLetters.length)]
-    );
-  }
-
-  if (numbersInput.checked) {
-    chars.push(numbers[Math.floor(Math.random() * numbers.length)]);
-  }
-
-  if (symbolsInput.checked) {
-    chars.push(special[Math.floor(Math.random() * special.length)]);
-  }
-
-  if (chars.length === 0) {
-    return "";
-  }
-
-  console.log(chars);
-  return chars[Math.floor(Math.random() * chars.length)];
-};
-
-// Generates a password when the user clicks the generate password button
-generateBtn.addEventListener("click", function (event) {
-  event.preventDefault();
-
-  let _password = "";
-
-  for (let i = 0; i < counter; i++) {
-    _password += getRandom();
-  }
-
-  console.log(_password);
-  passwordEl.textContent = _password ? _password : "Please check some inputs";
-});
-
-// Modal functionality
-copyBtn.addEventListener("click", function (event) {
-  event.preventDefault();
-
+copyBtn.addEventListener("click", (e) => {
+  e.preventDefault();
   modalEl.classList.add("active");
   backdropEl.classList.add("active");
-
-  if (passwordEl.textContent) {
-    modalTitle.textContent = "Success";
-    modalMessage.textContent = "Password successfully copied to clipboard";
+  if (myPassword) {
+    modalTitle.innerText = "Success";
+    modalMessage.innerText = `Your password (${myPassword}) has been copied to your clipboard`;
   } else {
-    modalTitle.textContent = "Error";
-    modalMessage.textContent = "There is nothing to copy to clipboard";
+    modalTitle.innerText = "Error";
+    modalMessage.innerText = "Generate the password first";
   }
 });
 
-backdropEl.addEventListener("click", function () {
-  backdropEl.classList.remove("active");
+backdropEl.addEventListener("click", (e) => {
   modalEl.classList.remove("active");
+  backdropEl.classList.remove("active");
 });
 
-modalBtn.addEventListener("click", function (event) {
-  event.preventDefault();
-  backdropEl.classList.remove("active");
+modalBtn.addEventListener("click", (e) => {
   modalEl.classList.remove("active");
+  backdropEl.classList.remove("active");
+});
+
+const getRandomChar = () => {
+  let randomChar = "";
+  if (upperInput.checked) {
+    randomChar +=
+      upperCaseLetters[Math.floor(Math.random() * upperCaseLetters.length)];
+  }
+  if (lowerInput.checked) {
+    randomChar +=
+      lowerCaseLetters[Math.floor(Math.random() * lowerCaseLetters.length)];
+  }
+  if (numbersInput.checked) {
+    randomChar += numbers[Math.floor(Math.random() * numbers.length)];
+  }
+  if (symbolsInput.checked) {
+    randomChar += special[Math.floor(Math.random() * special.length)];
+  }
+  return randomChar[Math.floor(Math.random() * randomChar.length)];
+};
+
+generateBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  myPassword = "";
+  for (let i = 0; i < counter; i++) {
+    if (getRandomChar()) myPassword += getRandomChar();
+  }
+
+  myPassword
+    ? (passwordEl.innerHTML = myPassword)
+    : (passwordEl.innerHTML = "Please tick some inputs");
 });
